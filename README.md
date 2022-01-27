@@ -97,7 +97,7 @@ For a simple deposit for 2 years with a rate of 10% and an initial amount of 100
     <img src="https://render.githubusercontent.com/render/math?math=FV - 1000\cdot(1 %2b 10 \%25)^2 = 0">
 </div>
 
-For a credit for 2 years with a rate of 10% and an initial amount of 1000 we may use a set of 2 formulas:  
+For a credit for 2 years with a rate of 10% and an initial amount of 1000 we may use a set of 2 formulas.  
 This is not an optimal solution, but it allows us to use same relationship.  
 Firstly, we have to find FV, the value of a loan in 2 years.  
 
