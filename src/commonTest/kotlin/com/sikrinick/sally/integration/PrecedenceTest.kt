@@ -1,3 +1,7 @@
+package com.sikrinick.sally.integration
+
+import com.sikrinick.sally.SallyTest
+import com.sikrinick.sally.*
 import kotlin.test.Test
 
 class PrecedenceTest : SallyTest() {

@@ -1,3 +1,9 @@
+package com.sikrinick.sally.integration
+
+import com.sikrinick.sally.SallyTest
+import com.sikrinick.sally.asExpr
+import com.sikrinick.sally.minus
+import com.sikrinick.sally.x
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -7,7 +13,6 @@ class GeneralTest : SallyTest() {
     fun simple_solver() {
         // given
         val expr = 1.asExpr()
-        // 1
 
         // when
         val value = expr.solve()

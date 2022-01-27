@@ -1,5 +1,7 @@
 plugins {
     kotlin("multiplatform") version "1.6.10"
+    id("org.jetbrains.kotlinx.benchmark") version "0.4.2"
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.6.0"
 }
 
 group = "com.sikrinick"
@@ -19,7 +21,8 @@ kotlin {
             useJUnitPlatform()
         }
     }
-    js(BOTH) {
+    js {
+        nodejs()
         browser {
             commonWebpackConfig {
                 cssSupport.enabled = true
@@ -49,5 +52,43 @@ kotlin {
         val jsTest by getting
         val nativeMain by getting
         val nativeTest by getting
+
+
+        val benchmarks by creating {
+            dependsOn(commonMain)
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.2")
+            }
+        }
+        val benchmarksJvm by creating {
+            dependsOn(benchmarks)
+            jvmMain.dependsOn(this)
+        }
+        val benchmarksJs by creating {
+            dependsOn(benchmarks)
+            jsMain.dependsOn(this)
+        }
+        val benchmarksNative by creating {
+            dependsOn(benchmarks)
+            nativeMain.dependsOn(this)
+        }
+    }
+}
+
+// For JVM Benchmarks based on JMH
+allOpen {
+    annotation("org.openjdk.jmh.annotations.State")
+}
+
+benchmark {
+    targets {
+        register("jvm")
+        register("js")
+        register("native")
+    }
+    configurations {
+        val main by getting {
+            outputTimeUnit = "ms"
+        }
     }
 }

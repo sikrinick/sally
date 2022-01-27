@@ -1,3 +1,6 @@
+package com.sikrinick.sally
+
+import com.sikrinick.sally.Expr
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 

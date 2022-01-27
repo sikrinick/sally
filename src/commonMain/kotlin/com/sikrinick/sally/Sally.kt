@@ -1,3 +1,5 @@
+package com.sikrinick.sally
+
 import kotlin.math.log
 import kotlin.math.pow
 
@@ -14,15 +16,15 @@ sealed class Expr {
             } else if (lhs is Answer && rhs is Unknown) {
                 Unknown.Binary.RightX(lhs, rhs, operation)
             } else {
-                throw RuntimeException("Multiple X not supported: $this")
+                throw RuntimeException("Multiple com.sikrinick.sally.X not supported: $this")
             }
         }
-        is Op.Unary  -> when(val expr = expr.result()) {
-            is Answer  -> Answer(operation.native(expr.value))
+        is Op.Unary -> when(val expr = expr.result()) {
+            is Answer -> Answer(operation.native(expr.value))
             is Unknown -> Unknown.Unary(expr, operation)
         }
-        is Id        -> Answer(value)
-        is X         -> Unknown.None
+        is Id -> Answer(value)
+        is X -> Unknown.None
     }
 
     fun solve() = result().findX()
@@ -33,7 +35,7 @@ internal fun Op.withPrecedence(): Op = when(this) {
         is Op -> when(this.precedence < lhs.precedence) {
             true -> when(lhs) {
                 is Op.Binary -> lhs.copy(rhs = this.copy(lhs = lhs.rhs))
-                is Op.Unary  -> lhs.copy(expr = this.copy(lhs = lhs.expr))
+                is Op.Unary -> lhs.copy(expr = this.copy(lhs = lhs.expr))
             }
             else -> this
         }
@@ -43,7 +45,7 @@ internal fun Op.withPrecedence(): Op = when(this) {
         is Op -> when(this.precedence < expr.precedence) {
             true -> when(expr) {
                 is Op.Binary -> expr.copy(rhs = this.copy(expr = expr.rhs))
-                is Op.Unary  -> expr.copy(expr = this.copy(expr = expr.expr))
+                is Op.Unary -> expr.copy(expr = this.copy(expr = expr.expr))
             }
             else -> this
         }

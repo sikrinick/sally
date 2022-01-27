@@ -7,7 +7,9 @@ Occasionally, even in commercial programming you may run into a problem, which c
 Let's assume, we run a logistic business.  
 For example, basic business requirement may be to calculate box volume:   
 
-<img alt="boxVolume" src="https://render.githubusercontent.com/render/math?math=length \cdot width \cdot height = volume">
+<div style="background-color:white; display: inline-block; padding-top: 5px; padding-left: 5px; padding-right: 5px">
+ <img alt="boxVolume" src="https://render.githubusercontent.com/render/math?math=length \cdot width \cdot height = volume">
+</div>
 
 ```kotlin
 fun boxVolume(length: Double, width: Double, height: Double) = length * width * height
@@ -77,7 +79,47 @@ val expr = 10.asExpr() - 3 * 2
 println(expr.solve()) // 4
 ```
 
-More complicated example is in `jvmMain/kotlin/main.kt`
+## Reasoning
+Consider common financial formula that represents relationship between Future Value (FV), Present Value (PV), and Periodic Payments (PMT).   
+
+<div style="background-color:white; display: inline-block; padding-top: 5px; padding-left: 5px; padding-right: 5px">
+    <img alt="fv - pv*(1+i/m)^mn - pmt*((1+i/m)^(mn)-1)/i/m " src="https://render.githubusercontent.com/render/math?math={FV - PV\cdot(1 %2b \dfrac{i}{m})^{mn} - PMT\dfrac{(1 %2b \dfrac{i}{m})^{mn}-1}{\dfrac{i}{m}}  = 0}">  
+</div>
+
+Where:  
+`i` is an annual rate.  
+`n` is a number of years.  
+`m` is a number of periods of capitalization of interest per year.
+
+For a simple deposit for 2 years with a rate of 10% and an initial amount of 1000 we would need next formula:  
+
+<div style="background-color:white; display: inline-block; padding-top: 5px; padding-left: 5px; padding-right: 5px">
+    <img src="https://render.githubusercontent.com/render/math?math=FV - 1000\cdot(1 %2b 10 \%25)^2 = 0">
+</div>
+
+For a credit for 2 years with a rate of 10% and an initial amount of 1000 we may use a set of 2 formulas:  
+This is not an optimal solution, but it allows us to use same relationship.  
+Firstly, we have to find FV, the value of a loan in 2 years.  
+
+<div style="background-color:white; display: inline-block; padding-top: 5px; padding-left: 5px; padding-right: 5px">
+<img src="https://render.githubusercontent.com/render/math?math=FV - 1000\cdot(1 %2b 10 \%25)^2 = 0">
+</div>
+<br/>
+<div style="background-color:white; display: inline-block; padding-top: 5px; padding-left: 5px; padding-right: 5px">
+<img src="https://render.githubusercontent.com/render/math?math=FV = 1210">  
+</div>
+
+Then, we have to find out monthly payments:  
+
+<div style="background-color:white; display: inline-block; padding-top: 5px; padding-left: 5px; padding-right: 5px">
+<img src="https://render.githubusercontent.com/render/math?math=1210 - PMT\dfrac{(1 %2b \dfrac{10 \%25}{12})^{12*2}-1}{\dfrac{10 \%25}{12}} = 0">
+</div>
+
+As one can observe, same formula is used in all the examples, but in some cases FV, PV or PMT is equal to zero.  
+However, as a code naive solution would be represented by 3 methods, one for each unknown variable FV, PV or PMT.  
+This results in an unnecessary growth of codebase, which can be substituted with a simple algebraic solver for linear equations.
+
+Sally allows to rewrite it as a single function representing logic with a couple of decorating functions.
 ```kotlin
 fun bank(
     fv: Expr,
@@ -130,42 +172,79 @@ fun credit() {
 
     "Credit PMT = %.2f".format(pmt).let(::println)
 }
+```
 
-fun main() {
-    deposit()
-    credit()
+## Performance
+
+Obviously, performance would be lower than a simple version based on Doubles.  
+Consider next benchmarks, one is using Doubles:
+```kotlin
+@Benchmark
+fun naive_double_performance(): Double {
+    val pv = 1000.00
+    val pmt = 100.00
+    val m = 12
+    val n = 2
+
+    val i = 10.00 / 100.00 / m
+    val mn = m * n
+
+    return pv * (1.0 + i).pow(mn) - pmt * ((1.0 + i).pow(mn) - 1) / i
 }
 ```
 
-## Reasoning
-Consider common financial formula that represents relationship between Future Value (FV), Present Value (PV), and Periodic Payments (PMT).   
+Another one is using this library:
+```kotlin
+@Benchmark
+fun expression_performance(): Double = fv(
+    pv = 1000.00,
+    pmt = 100.00,
+    rate = 10.00,
+    m = 12,
+    n = 2
+)
 
-<img alt="fv - pv*(1+i/m)^mn - pmt*((1+i/m)^(mn)-1)/i/m " src="https://render.githubusercontent.com/render/math?math={FV - PV\cdot(1 %2b \dfrac{i}{m})^{mn} - PMT\dfrac{(1 %2b \dfrac{i}{m})^{mn}-1}{\dfrac{i}{m}}  = 0}">  
+companion object {
+    private fun fv(
+        pv: Double,
+        pmt: Double,
+        rate: Double,
+        m: Int,
+        n: Int
+    ) = expr(
+        fv = X,
+        pv = pv.asExpr(),
+        pmt = pmt.asExpr(),
+        rate = rate.asExpr(),
+        m = m.asExpr(),
+        n = n.asExpr()
+    )
 
-Where:  
-<img src="https://render.githubusercontent.com/render/math?math=i"> is an annual rate.  
-<img src="https://render.githubusercontent.com/render/math?math=n"> is a number of years.  
-<img src="https://render.githubusercontent.com/render/math?math=m"> is a number of periods of capitalization of interest per year.
+    private fun expr(
+        fv: Expr,
+        pv: Expr,
+        pmt: Expr,
+        rate: Expr,
+        m: Expr,
+        n: Expr
+    ): Double {
+        val mn = m * n
+        val i = rate / 100.0 / m
+        val expr = fv - pv * (1.0 + i).pow(mn) - pmt * ((1.0 + i).pow(mn) - 1) / i
+        return expr.solve()
+    }
+}
+```
 
-For a simple deposit for 2 years with a rate of 10% and an initial amount of 1000 we would need next formula:  
+On a Macbook Pro 2019 it shows next results (the higher the better):
 
-<img src="https://render.githubusercontent.com/render/math?math=FV - 1000\cdot(1 %2b 10 \%25)^2 = 0">
+|        | Double-based    | Sally          |
+|--------|-----------------|----------------|
+| JVM    | 26981.54 ops/ms | 1601.96 ops/ms |
+| JS     | 926430 ops/ms   | 254.29 ops/ms  |
+| Native | 5966 ops/ms     | 40.67 ops/ms   |
 
-For a credit for 2 years with a rate of 10% and an initial amount of 1000 we may use a set of 2 formulas:  
-This is not an optimal solution, but it allows us to use same relationship.  
-Firstly, we have to find FV, the value of a loan in 2 years.  
-
-<img src="https://render.githubusercontent.com/render/math?math=FV - 1000\cdot(1 %2b 10 \%25)^2 = 0">
-<br/>
-<img src="https://render.githubusercontent.com/render/math?math=FV = 1210">  
-
-Then, we have to find out monthly payments:  
-
-<img src="https://render.githubusercontent.com/render/math?math=1210 - PMT\dfrac{(1 %2b \dfrac{10 \%25}{12})^{12*2}-1}{\dfrac{10 \%25}{12}} = 0">  
-
-As one can observe, same formula is used in all the examples, but in some cases FV, PV or PMT is equal to zero.  
-However, as a code naive solution would be represented by 3 methods, one for each unknown variable FV, PV or PMT.  
-This results in an unnecessary growth of codebase, which can be substituted with a simple algebraic solver for linear equations.
+Therefore, I suggest using it on a JVM platform, and, probably, Kotlin/Native, not on a JS platform.  
 
 ## Installation
 

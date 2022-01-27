@@ -1,3 +1,5 @@
+package com.sikrinick.sally
+
 sealed class Result<out T : Result<T>> {
 
     fun findX(acc: Double = 0.0): Double {
@@ -9,12 +11,14 @@ sealed class Result<out T : Result<T>> {
             result = result.simplify()
         } while (result != oldResult)
 
-        return when(this) {
-            is Answer         -> value
-            is Unknown.None   -> acc
-            is Unknown.Unary  ->  expr.findX(operation.inverse(acc))
-            is Unknown.Binary.LeftX -> lhs.findX(operation.inverseForLhs(acc, rhs.value))
-            is Unknown.Binary.RightX -> rhs.findX(operation.inverseForRhs(acc, lhs.value))
+        return with(result) {
+            when (this) {
+                is Answer -> value
+                is Unknown.None -> acc
+                is Unknown.Unary -> expr.findX(operation.inverse(acc))
+                is Unknown.Binary.LeftX -> lhs.findX(operation.inverseForLhs(acc, rhs.value))
+                is Unknown.Binary.RightX -> rhs.findX(operation.inverseForRhs(acc, lhs.value))
+            }
         }
     }
 
@@ -24,6 +28,7 @@ sealed class Result<out T : Result<T>> {
 data class Answer(val value: Double) : Result<Answer>() {
     override fun simplify() = this
 }
+
 sealed class Unknown<out T : Unknown<T>> : Result<T>() {
 
     object None : Unknown<None>() {

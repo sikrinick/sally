@@ -1,3 +1,5 @@
+package com.sikrinick.sally
+
 
 operator fun Expr.plus(rhs: Expr) = Op.Binary(this, rhs, Op.Binary.BinaryOperation.Add).withPrecedence()
 operator fun Expr.plus(number: Number) = plus(number.asExpr())

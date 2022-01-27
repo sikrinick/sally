@@ -1,3 +1,6 @@
+package com.sikrinick.sally.integration
+
+import com.sikrinick.sally.*
 import kotlin.math.pow
 import kotlin.test.Test
 
