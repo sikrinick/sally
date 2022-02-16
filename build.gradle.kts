@@ -2,10 +2,11 @@ plugins {
     kotlin("multiplatform") version "1.6.10"
     id("org.jetbrains.kotlinx.benchmark") version "0.4.2"
     id("org.jetbrains.kotlin.plugin.allopen") version "1.6.0"
+    id("maven-publish")
 }
 
-group = "com.sikrinick"
-version = "1.0-SNAPSHOT"
+group = "com.sally"
+version = "1.0.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -89,6 +90,25 @@ benchmark {
     configurations {
         val main by getting {
             outputTimeUnit = "ms"
+        }
+    }
+}
+
+configure<PublishingExtension> {
+    val usernameKey = "SONATYPE_USERNAME"
+    val passwordKey = "SONATYPE_PASSWORD"
+
+    repositories {
+        maven {
+            credentials {
+                username = findProperty(usernameKey)?.toString() ?: System.getenv(usernameKey) ?: ""
+                password = findProperty(passwordKey)?.toString() ?: System.getenv(passwordKey) ?: ""
+            }
+            url = uri(if (version.toString().contains("-SNAPSHOT")) {
+                "https://oss.sonatype.org/content/repositories/snapshots/"
+            } else {
+                "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            })
         }
     }
 }
