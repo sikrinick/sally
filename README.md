@@ -2,6 +2,32 @@
 Sally is a simple solver for Simple Algebraic Linear equations.  
 Platform-agnostic as a common module in a Kotlin/Multiplatform library.
 
+## Installation 
+```kotlin
+// Add Maven Central if needed
+repositories {
+    mavenCentral()
+}
+
+
+// Kotlin JVM only
+implementation(group = "io.github.sikrinick", name = "sally-jvm", version = "1.0.0-SNAPSHOT")
+// Kotlin JS only
+implementation(group = "io.github.sikrinick", name = "sally-js", version = "1.0.0-SNAPSHOT")
+// Same is for native platforms
+
+// Kotlin Multiplatform
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation(group = "io.github.sikrinick", name = "sally", version = "1.0.0-SNAPSHOT")
+            }
+        }
+    }
+}
+```
+
 ## Why?
 Occasionally, even in commercial programming you may run into a problem, which can be represented by a simple equation.  
 Let's assume, we run a logistic business.  
@@ -245,9 +271,4 @@ On a Macbook Pro 2019 it shows next results (the higher the better):
 | Native | 5966 ops/ms     | 40.67 ops/ms   |
 
 Therefore, I suggest using it on a JVM platform, and, probably, Kotlin/Native, not on a JS platform.  
-
-## Installation
-
-Fork or use [Jitpack](https://jitpack.io/).  
-Maven support will be done on request.
 

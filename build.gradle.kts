@@ -5,7 +5,7 @@ plugins {
     id("maven-publish")
 }
 
-group = "com.sally"
+group = "io.github.sikrinick"
 version = "1.0.0-SNAPSHOT"
 
 repositories {
@@ -104,10 +104,11 @@ configure<PublishingExtension> {
                 username = findProperty(usernameKey)?.toString() ?: System.getenv(usernameKey) ?: ""
                 password = findProperty(passwordKey)?.toString() ?: System.getenv(passwordKey) ?: ""
             }
+            val root = "https://s01.oss.sonatype.org"
             url = uri(if (version.toString().contains("-SNAPSHOT")) {
-                "https://oss.sonatype.org/content/repositories/snapshots/"
+                "$root/content/repositories/snapshots"
             } else {
-                "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                "$root/service/local/staging/deploy/maven2/"
             })
         }
     }
