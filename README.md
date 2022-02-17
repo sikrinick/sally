@@ -33,9 +33,7 @@ Occasionally, even in commercial programming you may run into a problem, which c
 Let's assume, we run a logistic business.  
 For example, basic business requirement may be to calculate box volume:   
 
-<div style="background-color:white; display: inline-block; padding-top: 5px; padding-left: 5px; padding-right: 5px">
- <img alt="boxVolume" src="https://render.githubusercontent.com/render/math?math=length \cdot width \cdot height = volume">
-</div>
+<img alt="boxVolume" src="https://render.githubusercontent.com/render/math?math=\color{gray}length \cdot width \cdot height = volume">
 
 ```kotlin
 fun boxVolume(length: Double, width: Double, height: Double) = length * width * height
@@ -108,9 +106,7 @@ println(expr.solve()) // 4
 ## Reasoning
 Consider common financial formula that represents relationship between Future Value (FV), Present Value (PV), and Periodic Payments (PMT).   
 
-<div style="background-color:white; display: inline-block; padding-top: 5px; padding-left: 5px; padding-right: 5px">
-    <img alt="fv - pv*(1+i/m)^mn - pmt*((1+i/m)^(mn)-1)/i/m " src="https://render.githubusercontent.com/render/math?math={FV - PV\cdot(1 %2b \dfrac{i}{m})^{mn} - PMT\dfrac{(1 %2b \dfrac{i}{m})^{mn}-1}{\dfrac{i}{m}}  = 0}">  
-</div>
+<img alt="fv - pv*(1+i/m)^mn - pmt*((1+i/m)^(mn)-1)/i/m " src="https://render.githubusercontent.com/render/math?math={\color{gray}FV - PV\cdot(1 %2b \dfrac{i}{m})^{mn} - PMT\dfrac{(1 %2b \dfrac{i}{m})^{mn}-1}{\dfrac{i}{m}}  = 0}">  
 
 Where:  
 `i` is an annual rate.  
@@ -119,27 +115,19 @@ Where:
 
 For a simple deposit for 2 years with a rate of 10% and an initial amount of 1000 we would need next formula:  
 
-<div style="background-color:white; display: inline-block; padding-top: 5px; padding-left: 5px; padding-right: 5px">
-    <img src="https://render.githubusercontent.com/render/math?math=FV - 1000\cdot(1 %2b 10 \%25)^2 = 0">
-</div>
+<img src="https://render.githubusercontent.com/render/math?math=\color{gray}FV - 1000\cdot(1 %2b 10 \%25)^2 = 0">
 
 For a credit for 2 years with a rate of 10% and an initial amount of 1000 we may use a set of 2 formulas.  
 This is not an optimal solution, but it allows us to use same relationship.  
 Firstly, we have to find FV, the value of a loan in 2 years.  
 
-<div style="background-color:white; display: inline-block; padding-top: 5px; padding-left: 5px; padding-right: 5px">
-<img src="https://render.githubusercontent.com/render/math?math=FV - 1000\cdot(1 %2b 10 \%25)^2 = 0">
-</div>
+<img src="https://render.githubusercontent.com/render/math?math=\color{gray}FV - 1000\cdot(1 %2b 10 \%25)^2 = 0">
 <br/>
-<div style="background-color:white; display: inline-block; padding-top: 5px; padding-left: 5px; padding-right: 5px">
-<img src="https://render.githubusercontent.com/render/math?math=FV = 1210">  
-</div>
+<img src="https://render.githubusercontent.com/render/math?math=\color{gray}FV = 1210">  
 
 Then, we have to find out monthly payments:  
 
-<div style="background-color:white; display: inline-block; padding-top: 5px; padding-left: 5px; padding-right: 5px">
-<img src="https://render.githubusercontent.com/render/math?math=1210 - PMT\dfrac{(1 %2b \dfrac{10 \%25}{12})^{12*2}-1}{\dfrac{10 \%25}{12}} = 0">
-</div>
+<img src="https://render.githubusercontent.com/render/math?math=\color{gray}1210 - PMT\dfrac{(1 %2b \dfrac{10 \%25}{12})^{12*2}-1}{\dfrac{10 \%25}{12}} = 0">
 
 As one can observe, same formula is used in all the examples, but in some cases FV, PV or PMT is equal to zero.  
 However, as a code naive solution would be represented by 3 methods, one for each unknown variable FV, PV or PMT.  
