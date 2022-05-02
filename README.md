@@ -1,22 +1,17 @@
 # Sally
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.sikrinick/sally/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.reactivex.rxjava3/rxjava)
 Sally is a simple solver for Simple Algebraic Linear equations.  
 Platform-agnostic as a common module in a Kotlin/Multiplatform library.
 
 ## Installation 
+
+### Kotlin Multiplatform
 ```kotlin
 // Add Maven Central if needed
 repositories {
     mavenCentral()
 }
 
-
-// Kotlin JVM only
-implementation(group = "io.github.sikrinick", name = "sally-jvm", version = "1.0.0-SNAPSHOT")
-// Kotlin JS only
-implementation(group = "io.github.sikrinick", name = "sally-js", version = "1.0.0-SNAPSHOT")
-// Same is for native platforms
-
-// Kotlin Multiplatform
 kotlin {
     sourceSets {
         commonMain {
@@ -26,6 +21,36 @@ kotlin {
         }
     }
 }
+```
+
+### Kotlin JVM
+```kotlin
+// Add Maven Central if needed
+repositories {
+    mavenCentral()
+}
+
+implementation(group = "io.github.sikrinick", name = "sally-jvm", version = "1.0.0-SNAPSHOT")
+```
+
+### Kotlin JS
+```kotlin
+// Add Maven Central if needed
+repositories {
+    mavenCentral()
+}
+
+implementation(group = "io.github.sikrinick", name = "sally-js", version = "1.0.0-SNAPSHOT")
+```
+
+### Kotlin Native
+```kotlin
+// Add Maven Central if needed
+repositories {
+    mavenCentral()
+}
+
+implementation(group = "io.github.sikrinick", name = "sally-native", version = "1.0.0-SNAPSHOT")
 ```
 
 ## Why?
