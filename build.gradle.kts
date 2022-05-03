@@ -1,12 +1,12 @@
 plugins {
-    kotlin("multiplatform") version "1.6.10"
+    kotlin("multiplatform") version "1.6.21"
     id("org.jetbrains.kotlinx.benchmark") version "0.4.2"
     id("org.jetbrains.kotlin.plugin.allopen") version "1.6.0"
     id("maven-publish")
 }
 
 group = "io.github.sikrinick"
-version = "1.0.0-SNAPSHOT"
+version = "0.0.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -105,11 +105,12 @@ configure<PublishingExtension> {
                 password = findProperty(passwordKey)?.toString() ?: System.getenv(passwordKey) ?: ""
             }
             val root = "https://s01.oss.sonatype.org"
-            url = uri(if (version.toString().contains("-SNAPSHOT")) {
+            url = uri(if (version.toString().endsWith("-SNAPSHOT")) {
                 "$root/content/repositories/snapshots"
             } else {
                 "$root/service/local/staging/deploy/maven2/"
             })
+            print("Publishing version $version to $url")
         }
     }
 }
