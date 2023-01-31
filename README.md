@@ -1,5 +1,5 @@
 # Sally
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.sikrinick/sally/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.reactivex.rxjava3/rxjava)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.sikrinick/sally/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.sikrinick/sally)
 Sally is a simple solver for Simple Algebraic Linear equations.  
 Platform-agnostic as a common module in a Kotlin/Multiplatform library.
 
