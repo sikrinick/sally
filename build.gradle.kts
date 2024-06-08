@@ -98,6 +98,29 @@ configure<PublishingExtension> {
     val usernameKey = "SONATYPE_USERNAME"
     val passwordKey = "SONATYPE_PASSWORD"
 
+    publications {
+        withType<MavenPublication> {
+            pom {
+                name.set("${project.group}:${project.description}")
+                description.set(name)
+                url.set("https://github.com/sikrinick/sally")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("sikrinick")
+                        name.set("Mykyta Sikriier")
+                        email.set("sikrinick@gmail.com")
+                    }
+                }
+            }
+        }
+    }
+
     repositories {
         maven {
             credentials {
