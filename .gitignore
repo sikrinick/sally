@@ -39,6 +39,7 @@ build
 .idea/artifacts
 .idea/compiler.xml
 .idea/jarRepositories.xml
+.idea/jsLibraryMappings.xml
 .idea/modules.xml
 .idea/*.iml
 .idea/modules

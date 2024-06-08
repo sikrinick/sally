@@ -9,15 +9,15 @@ Platform-agnostic as a common module in a Kotlin/Multiplatform library.
 ```kotlin
 // Add Maven Central if needed
 repositories {
-    maven { url = java.net.URI("https://s01.oss.sonatype.org/content/repositories/snapshots") }
-    // mavenCentral() // not released yet
+    mavenCentral()
+    // maven { url = java.net.URI("https://s01.oss.sonatype.org/content/repositories/snapshots") } // for snapshots
 }
 
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(group = "io.github.sikrinick", name = "sally", version = "0.0.1-SNAPSHOT")
+                implementation(group = "io.github.sikrinick", name = "sally", version = "1.0.0")
             }
         }
     }
@@ -28,33 +28,33 @@ kotlin {
 ```kotlin
 // Add Maven Central if needed
 repositories {
-    maven { url = java.net.URI("https://s01.oss.sonatype.org/content/repositories/snapshots") }
-    // mavenCentral() // not released yet
+    mavenCentral()
+    // maven { url = java.net.URI("https://s01.oss.sonatype.org/content/repositories/snapshots") } // for snapshots
 }
 
-implementation(group = "io.github.sikrinick", name = "sally-jvm", version = "0.0.1-SNAPSHOT")
+implementation(group = "io.github.sikrinick", name = "sally-jvm", version = "1.0.0")
 ```
 
 ### Kotlin JS
 ```kotlin
 // Add Maven Central if needed
 repositories {
-    maven { url = java.net.URI("https://s01.oss.sonatype.org/content/repositories/snapshots") }
-    // mavenCentral() // not released yet
+    mavenCentral()
+    // maven { url = java.net.URI("https://s01.oss.sonatype.org/content/repositories/snapshots") } // for snapshots
 }
 
-implementation(group = "io.github.sikrinick", name = "sally-js", version = "0.0.1-SNAPSHOT")
+implementation(group = "io.github.sikrinick", name = "sally-js", version = "1.0.0")
 ```
 
 ### Kotlin Native
 ```kotlin
 // Add Maven Central if needed
 repositories {
-    maven { url = java.net.URI("https://s01.oss.sonatype.org/content/repositories/snapshots") }
-    // mavenCentral() // not released yet
+    mavenCentral()
+    // maven { url = java.net.URI("https://s01.oss.sonatype.org/content/repositories/snapshots") } // for snapshots
 }
 
-implementation(group = "io.github.sikrinick", name = "sally-native", version = "0.0.1-SNAPSHOT")
+implementation(group = "io.github.sikrinick", name = "sally-native", version = "1.0.0")
 ```
 
 ## Why?
