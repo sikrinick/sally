@@ -35,7 +35,7 @@ build
 .idea/**/gradle.xml
 .idea/**/libraries
 
-## Maven
+## IDEA
 .idea/artifacts
 .idea/compiler.xml
 .idea/jarRepositories.xml
@@ -43,4 +43,7 @@ build
 .idea/modules.xml
 .idea/*.iml
 .idea/modules
+
+# KMPP
+.kotlin
 

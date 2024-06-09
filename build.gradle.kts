@@ -1,8 +1,13 @@
+import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
-    kotlin("multiplatform") version "1.6.21"
-    id("org.jetbrains.kotlinx.benchmark") version "0.4.2"
-    id("org.jetbrains.kotlin.plugin.allopen") version "1.6.0"
+    kotlin("multiplatform") version "2.0.0"
+    id("org.jetbrains.kotlinx.benchmark") version "0.4.11"
+    id("org.jetbrains.kotlin.plugin.allopen") version "2.0.0"
+    id("org.jetbrains.dokka") version "1.9.20"
     id("maven-publish")
+    signing
 }
 
 group = "io.github.sikrinick"
@@ -14,10 +19,10 @@ repositories {
 
 kotlin {
     jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = "11"
-        }
         withJava()
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_11)
+        }
         testRuns["test"].executionTask.configure {
             useJUnitPlatform()
         }
@@ -26,20 +31,13 @@ kotlin {
         nodejs()
         browser {
             commonWebpackConfig {
-                cssSupport.enabled = true
+                cssSupport {
+                    enabled.set(true)
+                }
             }
         }
     }
-    val hostOs = System.getProperty("os.name")
-    val isMingwX64 = hostOs.startsWith("Windows")
-    val nativeTarget = when {
-        hostOs == "Mac OS X" -> macosX64("native")
-        hostOs == "Linux" -> linuxX64("native")
-        isMingwX64 -> mingwX64("native")
-        else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
-    }
 
-    
     sourceSets {
         val commonMain by getting
         val commonTest by getting {
@@ -51,14 +49,11 @@ kotlin {
         val jvmTest by getting
         val jsMain by getting
         val jsTest by getting
-        val nativeMain by getting
-        val nativeTest by getting
-
 
         val benchmarks by creating {
             dependsOn(commonMain)
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.11")
             }
         }
         val benchmarksJvm by creating {
@@ -68,10 +63,6 @@ kotlin {
         val benchmarksJs by creating {
             dependsOn(benchmarks)
             jsMain.dependsOn(this)
-        }
-        val benchmarksNative by creating {
-            dependsOn(benchmarks)
-            nativeMain.dependsOn(this)
         }
     }
 }
@@ -85,7 +76,6 @@ benchmark {
     targets {
         register("jvm")
         register("js")
-        register("native")
     }
     configurations {
         val main by getting {
@@ -94,12 +84,21 @@ benchmark {
     }
 }
 
+val dokkaHtml by tasks.getting(DokkaTask::class)
+
+val javadocJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
+    dependsOn(dokkaHtml)
+    archiveClassifier.set("javadoc")
+    from(dokkaHtml.outputDirectory)
+}
+
 configure<PublishingExtension> {
     val usernameKey = "SONATYPE_USERNAME"
     val passwordKey = "SONATYPE_PASSWORD"
 
     publications {
         withType<MavenPublication> {
+            artifact(javadocJar)
             pom {
                 name.set("${project.group}:${project.description}")
                 description.set(name)
@@ -118,6 +117,7 @@ configure<PublishingExtension> {
                     }
                 }
             }
+            the<SigningExtension>().sign(this)
         }
     }
 

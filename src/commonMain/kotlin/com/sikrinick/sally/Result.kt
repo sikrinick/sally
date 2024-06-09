@@ -3,14 +3,7 @@ package com.sikrinick.sally
 sealed class Result<out T : Result<T>> {
 
     fun findX(acc: Double = 0.0): Double {
-        var result = this
-        var oldResult: Result<*>
-
-        do {
-            oldResult = result
-            result = result.simplify()
-        } while (result != oldResult)
-
+        val result = recursiveSimplify()
         return with(result) {
             when (this) {
                 is Answer -> value
@@ -20,6 +13,16 @@ sealed class Result<out T : Result<T>> {
                 is Unknown.Binary.RightX -> rhs.findX(operation.inverseForRhs(acc, lhs.value))
             }
         }
+    }
+
+    private fun recursiveSimplify(): Result<T> {
+        var result = this
+        var oldResult: Result<*>
+        do {
+            oldResult = result
+            result = result.simplify()
+        } while (result != oldResult)
+        return result
     }
 
     abstract fun simplify(): T
@@ -48,7 +51,7 @@ sealed class Unknown<out T : Unknown<T>> : Result<T>() {
             val rhs: Answer,
             val operation: Op.Binary.BinaryOperation
         ) : Binary() {
-            override fun simplify() = when (lhs) {
+            override fun simplify() = when(lhs) {
                 is LeftX -> if (operation == lhs.operation && operation.commutative) {
                     LeftX(
                         lhs = lhs.lhs.simplify(),
@@ -73,7 +76,7 @@ sealed class Unknown<out T : Unknown<T>> : Result<T>() {
             val rhs: Unknown<*>,
             val operation: Op.Binary.BinaryOperation
         ) : Binary() {
-            override fun simplify() = when (rhs) {
+            override fun simplify() = when(rhs) {
                 is LeftX -> if (operation == rhs.operation && operation.commutative) {
                     LeftX(
                         lhs = rhs.lhs.simplify(),
