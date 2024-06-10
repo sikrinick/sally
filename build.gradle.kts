@@ -21,7 +21,7 @@ kotlin {
     jvm {
         withJava()
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
         testRuns["test"].executionTask.configure {
             useJUnitPlatform()
@@ -116,6 +116,11 @@ configure<PublishingExtension> {
                         email.set("sikrinick@gmail.com")
                     }
                 }
+                scm {
+                    url.set("scm:git:https://github.com/sikrinick/sally.git")
+                    connection.set("scm:git:https://github.com/sikrinick/sally.git")
+                    developerConnection.set("scm:git:https://github.com/sikrinick/sally.git")
+                }
             }
             the<SigningExtension>().sign(this)
         }
@@ -137,3 +142,11 @@ configure<PublishingExtension> {
         }
     }
 }
+
+//region Fix Gradle warning about signing tasks using publishing task outputs without explicit dependencies
+// https://github.com/gradle/gradle/issues/26091
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    val signingTasks = tasks.withType<Sign>()
+    mustRunAfter(signingTasks)
+}
+//endregion
